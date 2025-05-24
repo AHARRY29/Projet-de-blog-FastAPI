@@ -142,8 +142,6 @@ Ce projet répond aux exigences du cours DSIA-5201A en fournissant une applicati
 
 ---
 
-*Ce projet est basé sur la structure [fastAPI_TDD_Docker](https://github.com/bsenftner/fastAPI_TDD_Docker) avec des améliorations significatives pour l'interface utilisateur et la gestion des articles de blog.*
-
 ## Informations pour l'évaluation
 
 Ce projet a été développé dans le cadre du cours DSIA-5201A et répond aux exigences suivantes :
