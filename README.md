@@ -4,6 +4,9 @@
 
 Ce projet est une plateforme de blog moderne développée avec FastAPI et une interface utilisateur ZenBlog basée sur Bootstrap 5. L'application permet de créer, gérer et visualiser des articles de blog avec une interface utilisateur élégante et responsive.
 
+**Date de soumission :** 24 mai 2025  
+**Auteur :** AHARRY29
+
 ## Stack Technique
 
 - **Backend**: FastAPI, Python 3.9+
@@ -35,8 +38,8 @@ Ce projet est une plateforme de blog moderne développée avec FastAPI et une in
 
 1. Clonez le dépôt :
    ```bash
-   git clone https://github.com/votre-username/fastAPI_TDD_Docker.git
-   cd fastAPI_TDD_Docker
+   git clone https://github.com/AHARRY29/Projet-de-blog-FastAPI.git
+   cd Projet-de-blog-FastAPI
    ```
 
 2. Vérifiez le fichier `.env` à la racine du projet (il est déjà fourni avec des valeurs par défaut) :
@@ -56,7 +59,7 @@ Ce projet est une plateforme de blog moderne développée avec FastAPI et une in
 ## Structure du Projet
 
 ```
-fastAPI_TDD_Docker/
+Projet-de-blog-FastAPI/
 ├── .env                      # Variables d'environnement
 ├── docker-compose.yml        # Configuration Docker Compose
 ├── README.md                 # Documentation du projet
@@ -140,3 +143,20 @@ Ce projet répond aux exigences du cours DSIA-5201A en fournissant une applicati
 ---
 
 *Ce projet est basé sur la structure [fastAPI_TDD_Docker](https://github.com/bsenftner/fastAPI_TDD_Docker) avec des améliorations significatives pour l'interface utilisateur et la gestion des articles de blog.*
+
+## Informations pour l'évaluation
+
+Ce projet a été développé dans le cadre du cours DSIA-5201A et répond aux exigences suivantes :
+
+- ✅ Se lance intégralement avec Docker Compose
+- ✅ Contient deux services : API FastAPI et PostgreSQL
+- ✅ Implémente une API complète en Python avec FastAPI
+- ✅ Utilise une base de données PostgreSQL
+- ✅ Inclut une table User avec toutes les fonctionnalités requises
+- ✅ Implémente un système d'authentification JWT complet
+- ✅ Protège certains endpoints avec l'authentification JWT
+- ✅ Inclut une suite de tests unitaires
+- ✅ Gère correctement les erreurs HTTP (401, 403, 404)
+- ✅ Interface utilisateur moderne et responsive
+
+Le dépôt GitHub est disponible à l'adresse : [https://github.com/AHARRY29/Projet-de-blog-FastAPI](https://github.com/AHARRY29/Projet-de-blog-FastAPI)
