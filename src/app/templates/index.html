@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+{# 
+	This is a Jinja2 template for an html page
+	These lines are comments and are removed when the template is rendered. 
+#}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Blog of Blake Senftner</title>
+  <link rel="stylesheet" href="/static/index.css">
+
+  <style>
+   div#main-content {
+	  box-sizing: border-box;
+	  font-family: Helvetica, Arial, sans-serif;
+	  font-size: 16px;
+	  height: 100%;
+	  margin: 0px;
+	  position: relative;
+	}
+  
+	.ql-size-small {
+	  /* font-size: 0.75em; */
+	  font-size: 12px;
+	}
+  
+	.ql-size-large {
+	  /* font-size: 1.5em; */
+	  font-size: 20px;
+	}
+  
+	.ql-size-huge {
+	  /* font-size: 2.5em; */
+	  font-size: 24px;
+	}
+  
+  </style>
+
+</head>
+<body onload="slidesInit()">
+	<div class="grid">
+		{% include 'common_header.html' %}
+
+		{# the left sidebar #}
+		{% include 'common_lsidebar.html' %}
+
+		{# the main content area #}
+		<main>
+			<div id="mainContent">
+				{# title and post contents, with an optional edit button #}
+				<H1> {{contentPost.title}} </H1>
+				<div class="ql-editor">
+					{{contentPost.description | safe}}
+				</div>
+				<h5>tags: {{contentPost.tags}}</h5>
+			</div>
+			
+		</main>
+
+		{# the right sidebar #}
+		<aside>
+			<div id="aside">
+				<a href="#" class="button" onclick="Login()">Login</a>
+				<br/>
+				<a href="#" class="button" onclick="Register()">Register</a>
+			</div>
+		</aside>
+  
+	<footer>
+		{{ frags[0].footer | safe }} 
+	</footer>
+	</div>
+
+	
+	<!-- Include the Velocity library 
+	<script src="//cdn.jsdelivr.net/npm/velocity-animate@2.0/velocity.min.js"></script> 
+	-->
+
+	<script>
+		
+		// if any slides are present on the page, we're on the first one:
+		var activeSlide = 0;
+		var slContainer = document.getElementById("slidesContainer");
+		var slPrev = document.getElementById("slidesPrev");
+		var slNext = document.getElementById("slidesNext");
+		//
+		function prevSlide() {
+			const collection = document.getElementsByClassName("slide");
+			var oldSlide = activeSlide;
+			activeSlide--;
+			if (activeSlide < 0) {
+				activeSlide = collection.length - 1;
+			}
+			collection[oldSlide].style.display = "none";
+			collection[activeSlide].style.display = "block";
+		}
+		//
+		function nextSlide() {
+			const collection = document.getElementsByClassName("slide");
+			var oldSlide = activeSlide;
+			activeSlide++;
+			if (activeSlide >= collection.length) {
+				activeSlide = 0;
+			}
+			collection[oldSlide].style.display = "none";
+			collection[activeSlide].style.display = "block";
+		}
+		//
+		function slidesInit() {
+			// reset these globals:
+			activeSlide = 0;
+		 	slContainer = document.getElementById("slidesContainer");
+			slPrev = document.getElementById("slidesPrev");
+			slNext = document.getElementById("slidesNext");
+			// handle any slides on the page:
+			if (slContainer && slPrev && slNext)
+			{
+				const collection = document.getElementsByClassName("slide");
+				for (let i = 1; i < collection.length; i++) {
+					collection[i].style.display = "none";
+				}
+				//
+				slPrev.addEventListener("click", prevSlide);
+				//
+				slNext.addEventListener("click", nextSlide);
+			}
+		}
+
+		document.addEventListener("DOMContentLoaded", function() {
+			page_init();
+			slidesInit();
+			setTimeout( slidesInit, 3000 );
+		});
+		//
+		function page_init() {
+
+			const access_token = localStorage.getItem('token');
+			if (typeof access_token !== 'undefined') {
+				
+				const options = { headers: { "Authorization": "Bearer " + access_token } }
+				fetch("/users/me", options)
+				.then(response => response.json())
+				.then( response =>  {
+
+					if (response.hasOwnProperty('roles')) {
+
+						// user is logged in, change contact link:
+						document.getElementById("contactButton").innerHTML = '<a href="#" class="button" onclick="UserContact()">Contact</a>';
+
+						if (response.roles.includes("admin")) {
+							// user is admin:
+							document.getElementById("mainContent").innerHTML += 
+								'<a href="#" class="button" onclick="BlogEdit()">Edit</a>';
+
+							document.getElementById("aside").innerHTML = 
+								`<a href="#" class="button" onclick="UserSettings()">Settings</a>
+								<br/><br/>
+								<a href="#" class="button" onclick="Logout()">Logout</a>
+								`;
+						}
+					}
+				});
+			}
+		}
+
+		function BlogEdit() { window.location.href = "/Editor/{{ contentPost.id }}"; }
+
+		function UserContact() { window.location.href = "/Contact"; }
+
+		function Contact() { window.location.href = "/precontact"; }
+
+		function Login() { window.location.href = "/login"; }
+
+		function Register() { window.location.href = "/register"; }
+
+		function UserSettings() { window.location.href = "/Settings"; }
+
+	</script>
+
+	{% include 'common_logout.html' %}
+
+	{% include 'common_refresh.html' %}
+	
+</body>
+</html>

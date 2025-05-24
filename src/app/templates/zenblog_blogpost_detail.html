@@ -1,0 +1,241 @@
+{% extends "zenblog_base.html" %}
+
+{% block title %}{{ blogpost.title }} - FastAPI_TDD_Docker{% endblock %}
+
+{% block content %}
+<!-- ======= Single Post Header ======= -->
+<section class="page-header py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>{{ blogpost.title }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                        <li class="breadcrumb-item"><a href="/blogposts">Blog</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ blogpost.title }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======= Single Post Content ======= -->
+<section class="single-post py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <article class="blog-post">
+                    <!-- Featured Image -->
+                    <div class="post-img mb-4">
+                        <img src="{{ blogpost.image_url|default(url_for('static', path='images/default-post.jpg')) }}" alt="{{ blogpost.title }}" class="img-fluid rounded">
+                    </div>
+                    
+                    <!-- Post Meta -->
+                    <div class="post-meta mb-4">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ blogpost.author_image|default(url_for('static', path='images/default-avatar.jpg')) }}" alt="Author" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                            <div>
+                                <span class="d-block fw-bold">{{ blogpost.author|default('Admin') }}</span>
+                                <span class="text-muted">{{ blogpost.created_date|default('2023-01-01') }}</span>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="badge bg-primary me-2">{{ blogpost.category|default('Blog') }}</span>
+                            {% for tag in blogpost.tags|default([]) %}
+                            <span class="badge bg-secondary me-1">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Post Content -->
+                    <div class="post-content">
+                        {{ blogpost.content|safe }}
+                    </div>
+                    
+                    <!-- Post Actions -->
+                    <div class="post-actions mt-5 pt-4 border-top">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-3">
+                                        <i class="bi bi-heart"></i> {{ blogpost.likes|default(0) }} Likes
+                                    </span>
+                                    <span>
+                                        <i class="bi bi-chat-dots"></i> {{ blogpost.comments|default([])|length }} Commentaires
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                                <button class="btn btn-sm btn-outline-primary me-2">
+                                    <i class="bi bi-heart"></i> J'aime
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-share"></i> Partager
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Author Bio -->
+                    <div class="author-bio mt-5 p-4 bg-light rounded">
+                        <div class="row">
+                            <div class="col-md-2 text-center">
+                                <img src="{{ blogpost.author_image|default(url_for('static', path='images/default-avatar.jpg')) }}" alt="Author" class="rounded-circle mb-3" style="width: 80px; height: 80px;">
+                            </div>
+                            <div class="col-md-10">
+                                <h5>À propos de {{ blogpost.author|default('Admin') }}</h5>
+                                <p>{{ blogpost.author_bio|default('Auteur passionné par la technologie et le développement web.') }}</p>
+                                <div class="social-links">
+                                    <a href="#" class="me-2"><i class="bi bi-twitter"></i></a>
+                                    <a href="#" class="me-2"><i class="bi bi-facebook"></i></a>
+                                    <a href="#" class="me-2"><i class="bi bi-linkedin"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Comments Section -->
+                    <div class="comments-section mt-5">
+                        <h4 class="mb-4">Commentaires ({{ blogpost.comments|default([])|length }})</h4>
+                        
+                        <!-- Comment List -->
+                        {% for comment in blogpost.comments|default([]) %}
+                        <div class="comment mb-4 p-3 border-bottom">
+                            <div class="d-flex">
+                                <img src="{{ comment.author_image|default(url_for('static', path='images/default-avatar.jpg')) }}" alt="{{ comment.author }}" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                <div>
+                                    <h6 class="mb-1">{{ comment.author }}</h6>
+                                    <p class="text-muted small">{{ comment.date }}</p>
+                                    <p>{{ comment.content }}</p>
+                                    <button class="btn btn-sm btn-link p-0">Répondre</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Comment Replies -->
+                            {% for reply in comment.replies|default([]) %}
+                            <div class="reply ms-5 mt-3">
+                                <div class="d-flex">
+                                    <img src="{{ reply.author_image|default(url_for('static', path='images/default-avatar.jpg')) }}" alt="{{ reply.author }}" class="rounded-circle me-3" style="width: 40px; height: 40px;">
+                                    <div>
+                                        <h6 class="mb-1">{{ reply.author }}</h6>
+                                        <p class="text-muted small">{{ reply.date }}</p>
+                                        <p>{{ reply.content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p>Aucun commentaire pour le moment. Soyez le premier à commenter !</p>
+                        {% endfor %}
+                        
+                        <!-- Comment Form -->
+                        <div class="comment-form mt-4">
+                            <h5 class="mb-3">Laisser un commentaire</h5>
+                            <form action="/blogposts/{{ blogpost.id }}/comment" method="post">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="comment" class="form-label">Commentaire</label>
+                                    <textarea class="form-control" id="comment" name="comment" rows="5" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Publier le commentaire</button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Search Widget -->
+                <div class="card mb-4">
+                    <div class="card-header">Recherche</div>
+                    <div class="card-body">
+                        <form action="/blogposts/search" method="get">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="q" placeholder="Rechercher..." aria-label="Rechercher">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Categories Widget -->
+                <div class="card mb-4">
+                    <div class="card-header">Catégories</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li><a href="/blogposts?category=Technology">Technologie</a></li>
+                                    <li><a href="/blogposts?category=Web">Web</a></li>
+                                    <li><a href="/blogposts?category=Python">Python</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li><a href="/blogposts?category=FastAPI">FastAPI</a></li>
+                                    <li><a href="/blogposts?category=Docker">Docker</a></li>
+                                    <li><a href="/blogposts?category=Database">Base de données</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Posts Widget -->
+                <div class="card mb-4">
+                    <div class="card-header">Articles récents</div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            {% for post in recent_posts %}
+                            <li class="d-flex mb-3">
+                                <img src="{{ post.image_url|default(url_for('static', path='images/default-post.jpg')) }}" alt="{{ post.title }}" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-1"><a href="/blog/{{ post.id }}">{{ post.title }}</a></h6>
+                                    <small class="text-muted">{{ post.created_date|default('2023-01-01') }}</small>
+                                </div>
+                            </li>
+                            {% else %}
+                            <li>Aucun article récent</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Related Posts Widget -->
+                <div class="card mb-4">
+                    <div class="card-header">Articles similaires</div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            {% for post in related_posts %}
+                            <li class="d-flex mb-3">
+                                <img src="{{ post.image_url|default(url_for('static', path='images/default-post.jpg')) }}" alt="{{ post.title }}" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-1"><a href="/blog/{{ post.id }}">{{ post.title }}</a></h6>
+                                    <small class="text-muted">{{ post.created_date|default('2023-01-01') }}</small>
+                                </div>
+                            </li>
+                            {% else %}
+                            <li>Aucun article similaire</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

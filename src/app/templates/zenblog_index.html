@@ -1,0 +1,100 @@
+{% extends "zenblog_base.html" %}
+
+{% block title %}FastAPI_TDD_Docker - Accueil{% endblock %}
+
+{% block content %}
+<!-- ======= Hero Section ======= -->
+<section class="hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1>Bienvenue sur FastAPI Blog</h1>
+                <p>Une plateforme moderne de blog et de gestion de données, construite avec FastAPI, PostgreSQL et Docker.</p>
+                <div class="d-flex justify-content-center">
+                    <a href="{{ url_for('blogposts_list') }}" class="btn btn-primary me-3">Parcourir les articles</a>
+                    <a href="/notes" class="btn btn-outline-primary">Voir les notes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======= Featured Posts Section ======= -->
+<section class="featured-posts">
+    <div class="container">
+        <div class="section-header">
+            <h2>Articles à la une</h2>
+        </div>
+        
+        <div class="row">
+            {% for post in featured_posts %}
+            <div class="col-lg-4 col-md-6">
+                <div class="post-card">
+                    <div class="post-img">
+                        <img src="{{ post.image_url|default(url_for('static', path='images/default-post.jpg')) }}" alt="{{ post.title }}">
+                    </div>
+                    <div class="post-content">
+                        <span class="post-category">{{ post.category|default('Blog') }}</span>
+                        <h3><a href="/blog/{{ post.id }}">{{ post.title }}</a></h3>
+                        <p>{{ post.content|truncate(100) }}</p>
+                        <div class="post-meta">
+                            <img src="{{ post.author_image|default(url_for('static', path='images/default-avatar.jpg')) }}" alt="Author">
+                            <div class="post-meta-info">
+                                <span class="author">{{ post.author|default('Admin') }}</span>
+                                <span class="date">{{ post.created_date|default('2023-01-01') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <p>Aucun article à afficher pour le moment.</p>
+                <a href="/blogposts/new" class="btn btn-primary">Créer un article</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ======= Latest Notes Section ======= -->
+<section class="latest-notes bg-light py-5">
+    <div class="container">
+        <div class="section-header">
+            <h2>Dernières notes</h2>
+        </div>
+        
+        <div class="row">
+            {% for note in latest_notes %}
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ note.title }}</h5>
+                        <p class="card-text">{{ note.content|truncate(150) }}</p>
+                        <a href="/notes/{{ note.id }}" class="btn btn-sm btn-outline-primary">Lire plus</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <p>Aucune note à afficher pour le moment.</p>
+                <a href="/notes/new" class="btn btn-primary">Créer une note</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ======= Call to Action Section ======= -->
+<section class="cta py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2>Prêt à commencer ?</h2>
+                <p class="mb-4">Rejoignez notre communauté et partagez vos connaissances dès aujourd'hui.</p>
+                <a href="/register" class="btn btn-primary">S'inscrire maintenant</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

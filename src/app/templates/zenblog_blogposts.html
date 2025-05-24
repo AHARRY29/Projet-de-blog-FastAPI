@@ -1,0 +1,148 @@
+{% extends "zenblog_base.html" %}
+
+{% block title %}FastAPI_TDD_Docker - Articles de Blog{% endblock %}
+
+{% block content %}
+<!-- ======= Blog Posts Header ======= -->
+<section class="page-header py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Articles de Blog</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Blog</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======= Blog Posts Section ======= -->
+<section class="blog-posts py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                {% for post in blogposts %}
+                <div class="post-card mb-4">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <div class="post-img h-100">
+                                <img src="{{ post.image_url|default(url_for('static', path='images/default-post.jpg')) }}" alt="{{ post.title }}" class="h-100 w-100 object-fit-cover">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="post-content">
+                                <span class="post-category">{{ post.category|default('Blog') }}</span>
+                                <h3><a href="/blog/{{ post.id }}">{{ post.title }}</a></h3>
+                                <p>{{ post.content|truncate(150) }}</p>
+                                <div class="post-meta">
+                                    <img src="{{ post.author_image|default(url_for('static', path='images/default-avatar.jpg')) }}" alt="Author">
+                                    <div class="post-meta-info">
+                                        <span class="author">{{ post.author|default('Admin') }}</span>
+                                        <span class="date">{{ post.created_date|default('2023-01-01') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <h3>Aucun article disponible pour le moment</h3>
+                    <p>Soyez le premier à publier un article !</p>
+                    <a href="/blogposts/new" class="btn btn-primary mt-3">Créer un article</a>
+                </div>
+                {% endfor %}
+                
+                <!-- Pagination -->
+                {% if blogposts|length > 0 %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                            <a class="page-link" href="/blogposts?page={{ page - 1 }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% for p in range(1, total_pages + 1) %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link" href="/blogposts?page={{ p }}">{{ p }}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                            <a class="page-link" href="/blogposts?page={{ page + 1 }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Search Widget -->
+                <div class="card mb-4">
+                    <div class="card-header">Recherche</div>
+                    <div class="card-body">
+                        <form action="/blogposts/search" method="get">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="q" placeholder="Rechercher..." aria-label="Rechercher">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Categories Widget -->
+                <div class="card mb-4">
+                    <div class="card-header">Catégories</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li><a href="/blogposts?category=Technology">Technologie</a></li>
+                                    <li><a href="/blogposts?category=Web">Web</a></li>
+                                    <li><a href="/blogposts?category=Python">Python</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li><a href="/blogposts?category=FastAPI">FastAPI</a></li>
+                                    <li><a href="/blogposts?category=Docker">Docker</a></li>
+                                    <li><a href="/blogposts?category=Database">Base de données</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Posts Widget -->
+                <div class="card mb-4">
+                    <div class="card-header">Articles récents</div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            {% for post in recent_posts %}
+                            <li class="d-flex mb-3">
+                                <img src="{{ post.image_url|default(url_for('static', path='images/default-post.jpg')) }}" alt="{{ post.title }}" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-1"><a href="/blog/{{ post.id }}">{{ post.title }}</a></h6>
+                                    <small class="text-muted">{{ post.created_date|default('2023-01-01') }}</small>
+                                </div>
+                            </li>
+                            {% else %}
+                            <li>Aucun article récent</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

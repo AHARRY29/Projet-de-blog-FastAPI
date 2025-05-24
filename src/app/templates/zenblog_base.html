@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FastAPI_TDD_Docker - Blog & Data Notes{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="{{ url_for('static', path='bootstrap.min.css') }}" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="{{ url_for('static', path='bootstrap-icons.css') }}" rel="stylesheet">
+    
+    <!-- ZenBlog Custom CSS -->
+    <link href="{{ url_for('static', path='zenblog.css') }}" rel="stylesheet">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- ======= Header ======= -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">FastAPI Blog</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{{ url_for('root') }}">Accueil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if '/blogposts' in request.path %}active{% endif %}" href="{{ url_for('blogposts_list') }}">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if '/notes' in request.path %}active{% endif %}" href="/notes">Notes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if '/video' in request.path %}active{% endif %}" href="/video">Vidéos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if '/blog' in request.path %}active{% endif %}" href="/blog">Articles</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if '/contact' in request.path %}active{% endif %}" href="/Contact">Contact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {% if '/login' in request.path %}active{% endif %}" href="/login">Connexion</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- ======= Main Content ======= -->
+    <main id="main">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- ======= Footer ======= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <h4>À propos</h4>
+                    <p>
+                        FastAPI_TDD_Docker est une plateforme moderne de blog et de gestion de données, construite avec FastAPI, PostgreSQL et Docker.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="bi bi-twitter"></i></a>
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <h4>Liens utiles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Accueil</a></li>
+                        <li><a href="/blogposts">Blog</a></li>
+                        <li><a href="/notes">Notes</a></li>
+                        <li><a href="/video">Vidéos</a></li>
+                        <li><a href="/articles">Articles</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <h4>Contact</h4>
+                    <p>
+                        <strong>Email:</strong> info@example.com<br>
+                        <strong>Téléphone:</strong> +33 1 23 45 67 89<br>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; Copyright <strong><span>FastAPI_TDD_Docker</span></strong>. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="{{ url_for('static', path='bootstrap.bundle.min.js') }}"></script>
+    
+    <!-- Custom JS -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

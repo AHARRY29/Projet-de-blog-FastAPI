@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+{# 
+	This is a Jinja2 template for an html page
+	These lines are comments and are removed when the template is rendered. 
+#}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Blog of Blake Senftner</title>
+  <link rel="stylesheet" href="/static/index.css">
+
+</head>
+<body>
+	<div class="grid">
+		{% include 'common_header.html' %}
+
+		{# the left sidebar #}
+		{% include 'common_lsidebar.html' %}
+
+		<main>
+			<div id="mainContent">
+				{# the editor itself, embedded in a form, with a post's contents, and operation buttons #}
+				<h4>Contact Form</h4>
+            	<form method="post">
+					<label for="NewEmailSubject">Subject:</label>
+  					<input type="text" id="NewEmailSubject" name="label" value="{{contentPost.subject}}">
+					<div class="editorContainer">
+						<div id="editor">
+							{{contentPost.msg | safe}}
+  						</div>
+					</div> 
+					<div id="divBeneathTheEditor">
+						<a href="#" class="button" onclick="SendEmail()">Send message</a>
+					</div>
+				</form>
+			</div>
+		</main>
+
+		<aside>
+			<div id="aside">
+				<a href="#" class="button" onclick="Login();">Login</a>
+				<br/><br/>
+				<a href="#" class="button" onclick="Register();">Register</a>
+			</div>
+		</aside>
+  
+	<footer>
+		{{ frags[0].footer | safe }} 
+	</footer>
+	</div>
+	
+	{% include 'common_ifAccessDo.html' %}
+
+
+	{% include 'common_editStyle.html' %}
+
+    <!-- include the TinyMCE editor -->
+	<script src="https://cdn.tiny.cloud/1/tpl8zzz2nyqln68299z0tf9u4m2p3hi6c9qxgr7gal0i454q/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+	<script>
+
+        // configure the TinyMCE editor 
+        tinymce.init({
+            selector: '#editor',
+            convert_urls: false,
+            plugins: 'autolink',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | spellcheckdialog a11ycheck | align lineheight',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+              { value: 'First.Name', title: 'First Name' },
+              { value: 'Email', title: 'Email' },
+            ]
+        });
+
+		document.addEventListener( "DOMContentLoaded", function(){page_init();} );
+		//
+		function page_init_work() {
+			document.getElementById("aside").innerHTML = 
+							`<a href="#" class="button" onclick="UserSettings()";">Settings</a>
+							<br/><br/>
+							<a href="#" class="button" onclick="Logout()">Logout</a>
+							`;
+		}
+		//
+		function page_init() {
+			ifAccessDo(page_init_work);
+		}
+
+		function UserSettings() { window.location.href = "/Settings"; }
+
+		function Login() { window.location.href = "/login"; }
+
+		function Register() { window.location.href = "/register"; }
+
+		function SendEmail() {
+            // "let anyone" send contact messages
+			const access_token = 1 // localStorage.getItem('token');
+			if (access_token)
+			{
+				// get the email subject:
+				const newEmailSubject = document.getElementById("NewEmailSubject").value;
+				// Get HTML content
+				var newEmailHTML = tinymce.get("editor").getContent();
+
+				// post:
+				const params = {
+					"subject": newEmailSubject, 
+					"msg": newEmailHTML,
+				};
+			
+				const options = {
+					method: 'POST',
+					headers: {
+				  		'Accept': 'application/json',
+				  		'Content-Type': 'application/json',
+					},
+					body: JSON.stringify( params )  
+				};
+				fetch( '/send-email/contact', options )
+					.then( response => response.json() )
+					.then( response => {
+						// Do something with response.
+						console.log( response )
+						document.getElementById("divBeneathTheEditor").innerHTML = 
+                            '<p>Thank you for your message. If a response is expected, please provide a few days.<br/><br/>-Blake</p>'
+					}); /* */
+			}
+		}
+
+	</script>
+
+	{% include 'common_logout.html' %}
+
+	{% include 'common_refresh.html' %}
+
+</body>
+</html>
